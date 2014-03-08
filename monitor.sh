@@ -1,6 +1,16 @@
 #!/bin/bash
 
-pass=${1:?password is empty}
+read -sp 'PASSWORD: ' pass
+echo
+read -sp 'CONFIRM: ' pass2
+echo
+
+if ! [[ $pass = $pass2 ]]
+then
+    echo 'ERROR: passwords do not match'
+    exit 1
+fi
+
 pin=0
 pout=1
 dir=output

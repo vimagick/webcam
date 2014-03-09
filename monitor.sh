@@ -18,7 +18,7 @@ PATH=/opt/vc/bin:$PATH
 pin=0
 pout=1
 beep=2
-tmout=30
+tmout=60
 delay=10
 dir=output
 mkdir -p $dir
@@ -34,7 +34,7 @@ do
     msg="[$(date +%FT%T)] $jpg"
     echo "$msg"
     raspistill -vf -t 1 -q 10 -w 800 -h 600 -o $jpg
-    openssl des3 -salt -in $jpg -pass "pass:$pass" | gzip > $jpg.enc.gz
+    openssl des3 -salt -in $jpg -out $jpg.enc -pass "pass:$pass"
     #rm -f $jpg
     ln -f $jpg ${dir}/latest.jpg
     git add $dir

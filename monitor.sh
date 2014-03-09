@@ -14,7 +14,7 @@ fi
 PATH=/opt/vc/bin:$PATH
 pin=0
 pout=1
-tmout=10
+tmout=30
 delay=10
 dir=output
 mkdir -p $dir

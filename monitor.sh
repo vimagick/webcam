@@ -1,14 +1,17 @@
 #!/bin/bash
 
-read -sp 'PASSWORD: ' pass
-echo
-read -sp 'CONFIRM: ' pass2
-echo
-
-if ! [[ $pass = $pass2 ]]
+if [[ -z $pass ]]
 then
-    echo 'ERROR: passwords do not match'
-    exit 1
+    read -sp 'PASSWORD: ' pass
+    echo
+    read -sp 'CONFIRM: ' pass2
+    echo
+
+    if ! [[ $pass = $pass2 ]]
+    then
+        echo 'ERROR: passwords do not match'
+        exit 1
+    fi
 fi
 
 PATH=/opt/vc/bin:$PATH
@@ -31,7 +34,7 @@ do
     msg="[$(date +%FT%T)] $jpg"
     echo "$msg"
     raspistill -vf -t 1 -q 10 -w 800 -h 600 -o $jpg
-    openssl des3 -salt -in $jpg -pass "pass:$pass" > $jpg.enc.gz
+    openssl des3 -salt -in $jpg -pass "pass:$pass" | gzip > $jpg.enc.gz
     #rm -f $jpg
     ln -f $jpg ${dir}/latest.jpg
     git add $dir
@@ -39,7 +42,7 @@ do
     if ! timeout -k1 $tmout git push -q
     then
         gpio write $beep 1
-        sleep 0.1
+        sleep 0.2
         gpio write $beep 0
     fi
     gpio write $pout 0

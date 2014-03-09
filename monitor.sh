@@ -11,8 +11,11 @@ then
     exit 1
 fi
 
+PATH=/opt/vc/bin:$PATH
 pin=0
 pout=1
+tmout=10
+delay=10
 dir=output
 mkdir -p $dir
 
@@ -27,11 +30,12 @@ do
     echo "$msg"
     raspistill -t 1 -q 10 -w 800 -h 600 -o $jpg
     openssl des3 -salt -in $jpg -out $jpg.enc -pass "pass:$pass"
-    rm -f $jpg
+    #rm -f $jpg
+    ln -f $jpg ${dir}/latest.jpg
     git add $dir
     git commit -qm "$msg"
-    git push -q
+    timeout -k1 $tmout git push -q
     gpio write $pout 0
-    sleep 10
+    sleep $delay
 done
 

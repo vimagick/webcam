@@ -30,7 +30,7 @@ do
     jpg=$dir/$(date +%s).jpg
     msg="[$(date +%FT%T)] $jpg"
     echo "$msg"
-    raspistill -t 1 -q 10 -w 800 -h 600 -o $jpg
+    raspistill -vf -t 1 -q 10 -w 800 -h 600 -o $jpg
     openssl des3 -salt -in $jpg -out $jpg.enc -pass "pass:$pass"
     #rm -f $jpg
     ln -f $jpg ${dir}/latest.jpg

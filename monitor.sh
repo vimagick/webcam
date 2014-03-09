@@ -14,6 +14,7 @@ fi
 PATH=/opt/vc/bin:$PATH
 pin=0
 pout=1
+beep=2
 tmout=30
 delay=10
 dir=output
@@ -21,6 +22,7 @@ mkdir -p $dir
 
 gpio mode $pin input
 gpio mode $pout output
+gpio mode $beep output
 
 while gpio wfi $pin rising
 do
@@ -34,7 +36,12 @@ do
     ln -f $jpg ${dir}/latest.jpg
     git add $dir
     git commit -qm "$msg"
-    timeout -k1 $tmout git push -q
+    if ! timeout -k1 $tmout git push -q
+    then
+        gpio write $beep 1
+        sleep 0.1
+        gpio write $beep 0
+    fi
     gpio write $pout 0
     sleep $delay
 done
